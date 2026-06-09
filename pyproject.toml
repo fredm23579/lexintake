@@ -1,0 +1,48 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "lexintake"
+version = "1.0.0"
+description = "Legal email intake: mailbox -> Markdown -> deduped NotebookLM sources -> attorney-review artifacts. Windows-first."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "Fred M", email = "frdmtta@gmail.com" }]
+keywords = ["legal", "ediscovery", "email", "notebooklm", "markdown", "windows"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Environment :: Console",
+  "Intended Audience :: Legal Industry",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: Microsoft :: Windows",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+]
+# The three upstream projects install from GitHub (see README / installer
+# script); they are not on PyPI, so they are deliberately not pinned here.
+dependencies = []
+
+[project.optional-dependencies]
+browser = ["playwright>=1.52,<2"]            # OpenAI/Anthropic export harness
+openai = ["openai>=1.60"]
+anthropic = ["anthropic>=0.40"]
+dev = ["pytest>=8.0"]
+
+[project.scripts]
+lexintake = "lexintake.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/fredm23579/lexintake"
+Issues = "https://github.com/fredm23579/lexintake/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/lexintake"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

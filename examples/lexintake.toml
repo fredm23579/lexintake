@@ -1,0 +1,11 @@
+# Example per-case configuration. `lexintake init` writes this for you;
+# edit by hand any time — CLI flags override it per run.
+[lexintake]
+notebook = "CSE-2024-16299"     # NotebookLM notebook id for this matter
+backend = "stub"                # stub (local, offline) | enterprise (real upload)
+provider = "gemini"             # Stage 1 computer-use: gemini | openai | anthropic
+mail_provider = "gmail"         # gmail | outlook
+ocr = false                     # OCR scanned-image attachments (needs tesseract)
+prefer_markitdown = false       # try Microsoft MarkItDown before native handlers
+max_messages = 25               # browser-export cap per run
+artifacts = true                # write chronology/parties/exhibits/privilege

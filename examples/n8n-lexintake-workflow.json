@@ -1,0 +1,48 @@
+{
+  "name": "LexIntake nightly case sync",
+  "nodes": [
+    {
+      "parameters": { "rule": { "interval": [{ "field": "cronExpression", "expression": "0 2 * * 1-5" }] } },
+      "name": "Weeknights 2am",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [-200, 0]
+    },
+    {
+      "parameters": {
+        "command": "lexintake run C:\\cases\\lucerne",
+        "executeOnce": true
+      },
+      "name": "Run LexIntake",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [60, 0]
+    },
+    {
+      "parameters": {
+        "conditions": { "number": [{ "value1": "={{ $json.exitCode }}", "operation": "notEqual", "value2": 0 }] }
+      },
+      "name": "Failed?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [320, 0]
+    },
+    {
+      "parameters": {
+        "subject": "LexIntake run FAILED — lucerne",
+        "text": "={{ $json.stderr }}",
+        "options": {}
+      },
+      "name": "Email the paralegal",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [580, -100]
+    }
+  ],
+  "connections": {
+    "Weeknights 2am": { "main": [[{ "node": "Run LexIntake", "type": "main", "index": 0 }]] },
+    "Run LexIntake": { "main": [[{ "node": "Failed?", "type": "main", "index": 0 }]] },
+    "Failed?": { "main": [[{ "node": "Email the paralegal", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" }
+}

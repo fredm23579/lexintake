@@ -1,0 +1,17 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.pytest_cache/
+dist/
+build/
+# workspace artifacts if someone runs the pipeline inside the repo
+01_mail_in/
+02_mail_md/
+03_converted/
+05_artifacts/
+_audit/
+.nlm/
+.browser-profile/
+lexintake.toml
+!examples/lexintake.toml

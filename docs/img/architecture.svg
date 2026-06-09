@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="430" font-family="ui-sans-serif,'Segoe UI',Arial,sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#8b949e"/></marker>
+  </defs>
+  <rect width="880" height="430" rx="12" fill="#0d1117"/>
+  <text x="440" y="36" fill="#e6edf3" font-size="20" font-weight="700" text-anchor="middle">LexIntake — mailbox to attorney-ready sources</text>
+
+  <!-- inputs -->
+  <rect x="28" y="70" width="170" height="118" rx="8" fill="#161b22" stroke="#30363d"/>
+  <text x="113" y="94" fill="#8b949e" font-size="12" text-anchor="middle" font-weight="600">INPUTS</text>
+  <text x="113" y="116" fill="#e6edf3" font-size="13" text-anchor="middle">Outlook · Gmail</text>
+  <text x="113" y="136" fill="#e6edf3" font-size="13" text-anchor="middle">Clio · iManage exports</text>
+  <text x="113" y="156" fill="#e6edf3" font-size="13" text-anchor="middle">.eml · .msg · .mbox</text>
+  <text x="113" y="176" fill="#8b949e" font-size="12" text-anchor="middle">drop into 01_mail_in\</text>
+
+  <!-- stage 1 -->
+  <rect x="28" y="240" width="170" height="100" rx="8" fill="#1a1f2e" stroke="#388bfd"/>
+  <text x="113" y="264" fill="#79c0ff" font-size="12" text-anchor="middle" font-weight="600">STAGE 1 · optional</text>
+  <text x="113" y="286" fill="#e6edf3" font-size="13" text-anchor="middle">Browser export</text>
+  <text x="113" y="306" fill="#8b949e" font-size="12" text-anchor="middle">Gemini · OpenAI · Anthropic</text>
+  <text x="113" y="324" fill="#8b949e" font-size="12" text-anchor="middle">computer use, gated</text>
+  <path d="M113 240 L113 196" stroke="#8b949e" stroke-width="1.5" marker-end="url(#arr)" fill="none"/>
+
+  <!-- stage 2 -->
+  <rect x="248" y="100" width="180" height="100" rx="8" fill="#161b22" stroke="#30363d"/>
+  <text x="338" y="124" fill="#d2a8ff" font-size="12" text-anchor="middle" font-weight="600">STAGE 2 · mail2md</text>
+  <text x="338" y="146" fill="#e6edf3" font-size="13" text-anchor="middle">email.md + attachments</text>
+  <text x="338" y="166" fill="#8b949e" font-size="12" text-anchor="middle">deterministic, SHA-256</text>
+  <text x="338" y="184" fill="#8b949e" font-size="12" text-anchor="middle">byte-identical extraction</text>
+  <path d="M198 130 L248 140" stroke="#8b949e" stroke-width="1.5" marker-end="url(#arr)" fill="none"/>
+
+  <!-- stage 3 -->
+  <rect x="478" y="100" width="180" height="100" rx="8" fill="#161b22" stroke="#30363d"/>
+  <text x="568" y="124" fill="#d2a8ff" font-size="12" text-anchor="middle" font-weight="600">STAGE 3 · omniconvert</text>
+  <text x="568" y="146" fill="#e6edf3" font-size="13" text-anchor="middle">docx pptx xlsx rtf → md</text>
+  <text x="568" y="166" fill="#8b949e" font-size="12" text-anchor="middle">only if not already Markdown</text>
+  <text x="568" y="184" fill="#8b949e" font-size="12" text-anchor="middle">hash-named: never re-converts</text>
+  <path d="M428 150 L478 150" stroke="#8b949e" stroke-width="1.5" marker-end="url(#arr)" fill="none"/>
+
+  <!-- stage 4 -->
+  <rect x="690" y="100" width="162" height="100" rx="8" fill="#161b22" stroke="#30363d"/>
+  <text x="771" y="124" fill="#d2a8ff" font-size="12" text-anchor="middle" font-weight="600">STAGE 4 · nlm</text>
+  <text x="771" y="146" fill="#e6edf3" font-size="13" text-anchor="middle">NotebookLM sources</text>
+  <text x="771" y="166" fill="#8b949e" font-size="12" text-anchor="middle">fingerprint · dedupe</text>
+  <text x="771" y="184" fill="#8b949e" font-size="12" text-anchor="middle">upload · track</text>
+  <path d="M658 150 L690 150" stroke="#8b949e" stroke-width="1.5" marker-end="url(#arr)" fill="none"/>
+
+  <!-- stage 5 -->
+  <rect x="248" y="250" width="410 " height="110" rx="8" fill="#102718" stroke="#2ea043"/>
+  <text x="453" y="276" fill="#7ee787" font-size="12" text-anchor="middle" font-weight="600">STAGE 5 · lexintake — ATTORNEY REVIEW</text>
+  <text x="453" y="300" fill="#e6edf3" font-size="13" text-anchor="middle">chronology.md · parties.md · exhibit_index.md</text>
+  <text x="453" y="320" fill="#e6edf3" font-size="13" text-anchor="middle">privilege_review.md (keyword screen, review-first queue)</text>
+  <text x="453" y="342" fill="#8b949e" font-size="12" text-anchor="middle">+ _audit\run-*.json chain-of-custody record every run</text>
+  <path d="M338 200 L380 250" stroke="#8b949e" stroke-width="1.5" marker-end="url(#arr)" fill="none"/>
+
+  <!-- notebooklm -->
+  <rect x="690" y="250" width="162" height="110" rx="8" fill="#1a1f2e" stroke="#388bfd"/>
+  <text x="771" y="280" fill="#79c0ff" font-size="13" text-anchor="middle" font-weight="600">NotebookLM</text>
+  <text x="771" y="304" fill="#e6edf3" font-size="12" text-anchor="middle">briefs · timelines</text>
+  <text x="771" y="322" fill="#e6edf3" font-size="12" text-anchor="middle">Q&amp;A over the corpus</text>
+  <text x="771" y="344" fill="#8b949e" font-size="12" text-anchor="middle">attorney drives</text>
+  <path d="M771 200 L771 250" stroke="#8b949e" stroke-width="1.5" marker-end="url(#arr)" fill="none"/>
+
+  <text x="440" y="408" fill="#586069" font-size="12" text-anchor="middle">idempotent end to end — re-running converts nothing twice and uploads nothing twice</text>
+</svg>
