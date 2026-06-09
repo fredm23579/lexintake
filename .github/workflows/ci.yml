@@ -14,15 +14,15 @@ jobs:
         python: ["3.11", "3.14"]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with: { path: lexintake }
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with: { repository: fredm23579/mail2md-computer-use, path: mail2md-computer-use }
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with: { repository: fredm23579/omniconvert-md, path: omniconvert-md }
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with: { repository: fredm23579/notebooklm-manager, path: notebooklm-manager }
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with: { python-version: "${{ matrix.python }}" }
       - name: Install (converter path only — no browser stack in CI)
         run: |
