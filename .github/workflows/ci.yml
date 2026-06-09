@@ -1,0 +1,36 @@
+name: ci
+
+on:
+  push: { branches: [main] }
+  pull_request:
+
+jobs:
+  test:
+    # Windows is the deployment target; Linux keeps the suite honest cross-OS.
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+        python: ["3.11", "3.14"]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with: { path: lexintake }
+      - uses: actions/checkout@v4
+        with: { repository: fredm23579/mail2md-computer-use, path: mail2md-computer-use }
+      - uses: actions/checkout@v4
+        with: { repository: fredm23579/omniconvert-md, path: omniconvert-md }
+      - uses: actions/checkout@v4
+        with: { repository: fredm23579/notebooklm-manager, path: notebooklm-manager }
+      - uses: actions/setup-python@v5
+        with: { python-version: "${{ matrix.python }}" }
+      - name: Install (converter path only — no browser stack in CI)
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e "./omniconvert-md[documents,msg]" -e ./notebooklm-manager
+          pip install --no-deps -e ./mail2md-computer-use
+          pip install "markdownify>=1.2,<2" "extract-msg>=0.55,<1" "typer>=0.16,<1"
+          pip install --no-deps -e ./lexintake
+          pip install pytest
+      - name: Test
+        run: python -m pytest lexintake/tests
