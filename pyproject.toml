@@ -31,7 +31,7 @@ dependencies = []
 browser = ["playwright>=1.52,<2"]            # OpenAI/Anthropic export harness
 openai = ["openai>=1.60"]
 anthropic = ["anthropic>=0.40"]
-dev = ["pytest>=8.0"]
+dev = ["pytest>=8.0", "python-docx>=1.1"]  # python-docx: conftest builds a .docx fixture
 
 [project.scripts]
 lexintake = "lexintake.cli:main"
