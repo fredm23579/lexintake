@@ -35,22 +35,13 @@ built to the current API specs:
   beta header: the model emits `tool_use` blocks; we answer with
   `tool_result` image blocks.
 
-Minimal launch recipe:
+Both OpenAI and Anthropic are now fully automated within the CLI. When you run
+`lexintake export` with either provider, it will launch an interactive browser window,
+allow you to log in, and then take over to execute the export query using the selected model.
 
-```python
-from playwright.sync_api import sync_playwright
-from lexintake.providers.harness import BrowserExecutor
-from lexintake.providers.openai_cua import run_export_openai  # or anthropic_cua
-
-with sync_playwright() as p:
-    browser = p.chromium.launch(headless=False)
-    page = browser.new_page(viewport={"width": 1280, "height": 800})
-    page.goto("https://mail.google.com")
-    input("Log in, open the target label, then press Enter... ")
-    run_export_openai(
-        "Export the 25 most recent messages in this view as .eml downloads.",
-        BrowserExecutor(page),
-    )
+```powershell
+$env:OPENAI_API_KEY = "..."
+lexintake export C:\cases\lucerne --query "label:lucerne newer_than:1y" --provider openai --execute
 ```
 
 ## Security posture

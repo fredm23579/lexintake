@@ -39,6 +39,11 @@ MAX_PATH = 260
 
 
 def is_windows() -> bool:
+    """Check if the current operating system is Windows.
+    
+    This is used to selectively apply Windows-specific hardening logic
+    (like extended path prefixes) only when necessary.
+    """
     return sys.platform == "win32"
 
 
@@ -68,14 +73,22 @@ def extended_path(path: Path) -> str:
     r"""Return a string form safe past MAX_PATH on Windows (``\\?\`` form).
 
     On non-Windows platforms the plain path is returned unchanged, so callers
-    can use this unconditionally.
+    can use this unconditionally. This prevents PathTooLong exceptions when
+    dealing with deeply nested directories or extremely long file names common
+    in discovery and legal documents.
     """
+    # Resolve the path to an absolute path
     p = Path(path).resolve()
     s = str(p)
+    # If not on Windows, or already prefixed, or short enough, do nothing
     if not is_windows() or s.startswith("\\\\?\\") or len(s) < MAX_PATH - 12:
         return s
+    
+    # Handle UNC paths (e.g. \\server\share) specially
     if s.startswith("\\\\"):                  # UNC share -> \\?\UNC\server\...
         return "\\\\?\\UNC" + s[1:]
+    
+    # Normal local path
     return "\\\\?\\" + s
 
 
@@ -94,10 +107,19 @@ def is_locked(path: Path) -> bool:
 
 
 def is_cloud_synced(path: Path) -> bool:
-    """True when *path* lives under OneDrive/SharePoint sync or a UNC share."""
+    """True when *path* lives under OneDrive/SharePoint sync or a UNC share.
+    
+    This is useful for detecting environments where file operations might be
+    slowed down or altered by network latency and cloud sync mechanisms.
+    """
+    # Convert path to absolute, lowercased string for inspection
     s = str(Path(path).resolve()).lower()
+    
+    # UNC paths are generally network drives or cloud-mounted shares
     if s.startswith("\\\\"):
         return True
+        
+    # Check for common sync service names in the path components
     markers = ("onedrive", "sharepoint")
     return any(m in part for part in s.replace("/", "\\").split("\\") for m in markers)
 

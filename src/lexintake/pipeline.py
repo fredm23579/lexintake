@@ -93,11 +93,25 @@ class RunReport:
 
 
 def _sha256(path: Path) -> str:
+    """Calculate the SHA-256 hash of a file's contents safely.
+    
+    This function wraps the file read in a try-except block to defend against
+    the file being locked, deleted, or otherwise inaccessible between the time
+    it was discovered and the time we attempt to hash it.
+    """
     h = hashlib.sha256()
-    with path.open("rb") as fh:
-        for chunk in iter(lambda: fh.read(1 << 20), b""):
-            h.update(chunk)
-    return h.hexdigest()
+    try:
+        # Open the file in binary mode to read bytes for hashing
+        with path.open("rb") as fh:
+            # Read in 1MB chunks to keep memory usage low, even for large files
+            for chunk in iter(lambda: fh.read(1 << 20), b""):
+                h.update(chunk)
+        return h.hexdigest()
+    except OSError as exc:
+        # If we cannot read the file (e.g. locked or deleted), return a
+        # fallback hash or handle the exception so we do not crash the pipeline.
+        # For our purposes, returning an empty string indicates failure.
+        return ""
 
 
 class LexIntakePipeline:

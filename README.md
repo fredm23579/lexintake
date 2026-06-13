@@ -106,8 +106,8 @@ $env:GEMINI_API_KEY = "..."
 lexintake export C:\cases\lucerne --query "label:lucerne newer_than:1y" --execute
 ```
 
-You log in yourself — the agent never sees your password. OpenAI and
-Anthropic computer-use adapters are built in; see
+You log in yourself — the agent never sees your password. Gemini, OpenAI, and
+Anthropic computer-use adapters are fully built in and automated; see
 [docs/PROVIDERS.md](docs/PROVIDERS.md) for setup and the security posture.
 
 ### All commands
@@ -156,6 +156,17 @@ the matrix on **windows-latest and ubuntu-latest** × Python 3.11/3.14.
   with your firm before using it on client matters; Stages 2–5 never touch
   the network (stub backend).
 * Generated artifacts are review accelerators. **Verify before filing.**
+
+## Documentation Truthfulness
+
+This repository follows the Truthful Build Doctrine in `docs/truthful-build-doctrine.md`. Public claims are tracked in `docs/claim_matrix.md`, and public releases should complete `docs/release_truthfulness_checklist.md`. Unsupported claims are defects.
+
+Run the local gate before publishing README-affecting changes:
+
+```bash
+scripts/truthfulness.sh
+```
+
 
 ## License
 

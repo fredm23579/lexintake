@@ -67,9 +67,24 @@ def _front_matter(text: str) -> dict[str, str]:
     return out
 
 
-def parse_email_md(path: Path) -> EmailRecord:
-    text = path.read_text(encoding="utf-8", errors="replace")
+def parse_email_md(path: Path) -> EmailRecord | None:
+    """Parse the front-matter of an email.md file to extract metadata.
+    
+    Returns an EmailRecord object if successful, or None if the file is
+    unreadable or cannot be parsed. This defensive design prevents a single
+    corrupted file from halting the entire artifacts generation process.
+    """
+    try:
+        # Read the file contents, replacing invalid unicode characters to prevent crashes
+        text = path.read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        # If the file is inaccessible (e.g. deleted or locked), fail gracefully
+        return None
+
+    # Extract the YAML front matter
     fm = _front_matter(text)
+    
+    # Initialize the record with extracted fields, using defaults if missing
     rec = EmailRecord(
         path=path,
         subject=fm.get("title") or "(no subject)",
@@ -79,21 +94,29 @@ def parse_email_md(path: Path) -> EmailRecord:
         message_id=fm.get("message_id", ""),
         sha256=fm.get("content_sha256", ""),
     )
+    
+    # Attempt to parse the date string into a datetime object
     if rec.date_raw:
-        try:  # RFC 2822 first (what mail headers carry), ISO as fallback
+        try:  # Try RFC 2822 format first (standard for email headers)
             rec.date = parsedate_to_datetime(rec.date_raw)
         except (TypeError, ValueError):
             try:
+                # Fall back to ISO format if RFC 2822 fails
                 rec.date = datetime.fromisoformat(rec.date_raw)
             except ValueError:
+                # If all parsing fails, leave the date as None
                 rec.date = None
-    # Attachment table rows: | [name](attachments/name) | `type` | size | `sha` |
+                
+    # Parse the markdown attachment table to extract attachment details
+    # Table rows format: | [name](attachments/name) | `type` | size | `sha` |
     for m in re.finditer(
         r"^\|\s*\[([^]]+)\]\([^)]+\)\s*\|\s*`([^`]*)`\s*\|\s*\d+\s*\|\s*`([0-9a-f]+)`",
         text,
         re.MULTILINE,
     ):
         rec.attachments.append((m.group(1), m.group(2), m.group(3)))
+        
+    # Scan the text for privilege-related keywords
     rec.privileged_hits = sorted(
         {m.group(0).lower() for m in PRIVILEGE_PATTERNS.finditer(text)}
     )
@@ -101,9 +124,20 @@ def parse_email_md(path: Path) -> EmailRecord:
 
 
 def collect_records(mail_md_root: Path) -> list[EmailRecord]:
-    """Parse every email.md under the Stage 2 output tree, date-sorted."""
-    records = [parse_email_md(p) for p in sorted(mail_md_root.glob("*/email.md"))]
-    # Undated mail sorts last, original order preserved (stable sort).
+    """Parse every email.md under the Stage 2 output tree, date-sorted.
+    
+    This function gracefully ignores any files that could not be parsed,
+    ensuring that the review artifacts can still be generated for the rest.
+    """
+    records = []
+    # Iterate through all email.md files found in the markdown directory
+    for p in sorted(mail_md_root.glob("*/email.md")):
+        rec = parse_email_md(p)
+        # Only add records that were successfully parsed
+        if rec is not None:
+            records.append(rec)
+            
+    # Sort the collected records. Undated mail sorts last, original order preserved (stable sort).
     records.sort(key=lambda r: (r.date is None, r.date or datetime.max))
     return records
 
